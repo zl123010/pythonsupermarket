@@ -70,8 +70,26 @@ class LoginModelForm(forms.ModelForm):
             user = MarketUsers.objects.get(phone=phone)
         except MarketUsers.DoesNotExist:
             raise forms.ValidationError({'phone': '手机号码错误'})
-
         if user.password != set_password(password):
             raise forms.ValidationError({'password': '密码错误'})
         self.cleaned_data['user'] = user
         return self.cleaned_data
+
+    # def clean(self):
+    #     nick_name = self.cleaned_data.get('nick_name')
+    #     birthday = self.cleaned_data.get('birthday')
+    #     school = self.cleaned_data.get('school')
+    #     address = self.cleaned_data.get('address')
+    #     hometown = self.cleane`d_data.get('hometown')
+    #     phone = self.cleaned_data.get('phone')
+    #     self.cleaned_data['info'] = info
+    # phone = self.cleaned_data.get('phone')
+    # try:
+    #     user = MarketUsers.objects.get(phone=phone)
+    # except MarketUsers.DoesNotExist:
+    #     raise forms.ValidationError({'phone': '手机号码错误'})
+    # password = self.cleaned_data.get('password', '')
+    # if user.password != set_password(password):
+    #     raise forms.ValidationError({'password': '密码错误'})
+    # self.cleaned_data['user'] = user
+    # return self.cleaned_data
