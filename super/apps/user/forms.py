@@ -2,6 +2,8 @@ from django import forms
 
 from user.helper import set_password
 from user.models import MarketUsers
+from django_redis import get_redis_connection
+
 
 
 class RegModelForm(forms.ModelForm):
@@ -14,6 +16,17 @@ class RegModelForm(forms.ModelForm):
                                })
     repassword = forms.CharField(error_messages={
         'required': '确认密码未填写'
+    })
+
+    captcha = forms.CharField(max_length=6,
+                              min_length=6,
+                              error_messages={
+                                  'required': '验证码未填写',
+                                  'max_length': '验证码格式错误',
+                                  'min_length': "验证码格式错误"
+                              })
+    agree = forms.BooleanField(error_messages={
+        'required': '必须同意用户协议'
     })
 
     class Meta:
@@ -44,6 +57,17 @@ class RegModelForm(forms.ModelForm):
         if password and repassword and password != repassword:
             # 确认密码错误
             raise forms.ValidationError({"repassword": "两次密码输入不一致"})
+        # 综合校验
+        try:
+            captcha = self.cleaned_data.get('captcha')
+            phone = self.cleaned_data.get('phone','')
+            r = get_redis_connection()
+            random_code = r.get(phone)
+            random_code = random_code.decode('utf-8')  # 获取到的验证码是二进制 要转码
+            if captcha and captcha != random_code:
+                raise forms.ValidationError({'captcha': '验证码输入错误'})
+        except:
+            raise forms.ValidationError({'captcha': '验证码输入错误'})
 
         # 返回清洗后的数据
         return self.cleaned_data

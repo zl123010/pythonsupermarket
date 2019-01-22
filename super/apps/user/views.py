@@ -1,4 +1,5 @@
 import random
+import uuid
 
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -9,7 +10,7 @@ from django.views import View
 
 # 定义登录页面的视图
 from user.forms import RegModelForm, LoginModelForm
-from user.helper import set_password, login, check_login
+from user.helper import set_password, login, check_login, send_sms
 import re
 from user.models import MarketUsers
 from django_redis import get_redis_connection
@@ -94,27 +95,32 @@ class SendMeg(View):
         # 判断参数合法性 如果合法返回一个对象不合法返回None
         if rs is None:
             return JsonResponse({'error': 1, 'errmsg': '手机号码格式不正确'})
-        # 操作数据
-        # 生成随机验证码进行模拟验证
+        # # 操作数据
+        # # 生成随机验证码进行模拟验证
         random_code = "".join([str(random.randint(0, 9)) for _ in range(6)])
-        print("随机验证码为{}".format(random_code))
-        # 保存验证码到redis中
-        r = get_redis_connection()
-        # 保存手机号对应的验证码
-        r.set(phone, random_code)
-        # 设置10分钟后过期
-        r.expire(phone, 600)
-        # 获取手机号发送验证码的次数
-        code_times = "{}_times".format(phone)
-        now_time = r.get(code_times)
-        if now_time is None or now_time < 5:
-            # 发送验证码次数不存在或小于5
-            r.incr(code_times)
-            # 设置10分钟后过期
-            r.expire(code_times, 600)
-        else:
-            # 返回错误 告知用户验证码发送次数过多
-            return JsonResponse({"error": 1, "errmsg": "验证码发送次数过多"})
+        # print("随机验证码为{}".format(random_code))
+        # # 保存验证码到redis中
+        # r = get_redis_connection()
+        # # 保存手机号对应的验证码
+        # r.set(phone, random_code)
+        # # 设置10分钟后过期
+        # r.expire(phone, 600)
+        # # 获取手机号发送验证码的次数
+        # code_times = "{}_times".format(phone)
+        # now_time = r.get(code_times)
+        # if now_time is None or now_time < 5:
+        #     # 发送验证码次数不存在或小于5
+        #     r.incr(code_times)
+        #     # 设置10分钟后过期
+        #     r.expire(code_times, 600)
+        # else:
+        #     # 返回错误 告知用户验证码发送次数过多
+        #     return JsonResponse({"error": 1, "errmsg": "验证码发送次数过多"})
+        __business_id = uuid.uuid1()
+        params = "{\"code\":\"%s\",\"product\":\" 我主良缘婚介所 \"}" % random_code
+        # print(params)
+        rs = send_sms(__business_id, phone, "注册验证", "SMS_2245271", params)
+        print(rs.decode('utf-8'))
 
         # 合成响应
 
