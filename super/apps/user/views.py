@@ -81,7 +81,7 @@ class UserInfoView(View):
         data = request.POST
         id = data.get('id')
         MarketUsers.objects.filter(id=id).update(**data)
-        return redirect('user:个人资料', id)
+        return redirect('user:个人资料', )
 
 
 class SendMeg(View):

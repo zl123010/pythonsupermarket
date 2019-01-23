@@ -19,6 +19,7 @@ def set_password(password):
 def login(request, user):  # 保存session的方法
     request.session['ID'] = user.pk
     request.session['phone'] = user.phone
+    request.session['head'] = user.head
     request.session.set_expiry(0)  # 关闭浏览器消失
 
 

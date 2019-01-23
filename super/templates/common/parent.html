@@ -19,6 +19,10 @@
     <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css"/>
     <script src="{% static 'js/jquery-1.10.2.min.js' %}"></script>
     <script src="{% static 'js/time.js' %}"></script>
+    <script src="{% static 'js/popup.mini.js' %}"></script>
+    <script src="{% static 'js/amazeui.min.js' %}"></script>
+    <link href="{% static 'css/check.css' %}" rel="stylesheet" type="text/css"/>
+
     {% block head_css %}
         {#      写css      #}
     {% endblock %}
@@ -29,8 +33,6 @@
 </head>
 <body>
 {% block header %}
-
-
     <header data-am-widget="header" class="am-header am-header-default sq-head ">
         <div class="am-header-left am-header-nav">
             <a href="javascript:history.back()" class="">
@@ -51,7 +53,7 @@
     <input type="password" name="password" id="password" placeholder="请输入密码" class="login-password">
     <input type="button" class="login-btn" value="我要登录">
     <div class="agree">
-        <a href="reg.html">免费注册</a>
+        <a href="{% url 'user:注册' %}">免费注册</a>
         <a href="forgetpassword.html" class="forget">忘记密码？</a>
     </div>
     <div class="line"></div>
@@ -66,7 +68,11 @@
 {% block footer %}
 
 {% endblock %}
-
+<script type='text/javascript'>
+    (function () {
+        new PopUp_api({el: '.index-qd', html: '.qd-box'});
+    })()
+</script>
 {% block footer_js %}
 
 {% endblock %}
