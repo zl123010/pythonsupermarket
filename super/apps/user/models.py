@@ -42,7 +42,7 @@ class MarketUsers(models.Model):
                                null=True,
                                blank=True,
                                verbose_name="住址")
-    head = models.ImageField(upload_to="head/%Y%m",default='head/memtx.png')
+    head = models.ImageField(upload_to="head/%Y%m", default='head/memtx.png')
 
     def __str__(self):
         return self.phone

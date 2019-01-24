@@ -1,3 +1,4 @@
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 from django.core.validators import MinLengthValidator
 # Create your models here.
@@ -36,9 +37,9 @@ class ComSpuModel(BaseModel):
     SPU_name = models.CharField(max_length=50,
                                 validators=[MinLengthValidator(2)],
                                 verbose_name='spu名称')
-    SPU_details = models.CharField(max_length=255,
-                                   validators=[MinLengthValidator(2)],
-                                   verbose_name='spu详情')
+    SPU_details = RichTextUploadingField(max_length=500,
+                                         validators=[MinLengthValidator(2)],
+                                         verbose_name='spu详情')
 
     class Meta:
         db_table = 'ComSpuModel'
@@ -80,7 +81,7 @@ class ComSkuModel(BaseModel):
                                      choices=is_on_sale_choices, default=False)
     Comclass = models.ForeignKey(to="ComClassModel",
                                  verbose_name="商品分类")
-    Com_spu = models.ForeignKey(to="ComSkuModel", verbose_name="商品SPU")
+    Com_spu = models.ForeignKey(to="ComSpuModel", verbose_name="商品SPU")
 
     def __str__(self):
         return self.Sku_name
@@ -134,11 +135,13 @@ class ActivityModel(BaseModel):
 class ActivityZoneModel(BaseModel):
     AZ_name = models.CharField(verbose_name="活动专区名称", max_length=50)
     AZ_intro = models.CharField(verbose_name="活动专区简介", max_length=255, null=True, blank=True)
-    AZ_order = models.SmallIntegerField(verbose_name="排序",default=0 )
-    is_on_sale = models.BooleanField(verbose_name="是否上线",choices=is_on_sale_choices,default=0)
-    com_sku = models.ManyToManyField(to="ComSkuModel",verbose_name="商品")
+    AZ_order = models.SmallIntegerField(verbose_name="排序", default=0)
+    is_on_sale = models.BooleanField(verbose_name="是否上线", choices=is_on_sale_choices, default=0)
+    com_sku = models.ManyToManyField(to="ComSkuModel", verbose_name="商品")
+
     def __str__(self):
         return self.AZ_name
+
     class Meta:
         verbose_name = "活动专区管理"
-        verbose_name_plural  = verbose_name
+        verbose_name_plural = verbose_name

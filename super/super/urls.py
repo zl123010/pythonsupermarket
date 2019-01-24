@@ -16,10 +16,15 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
+from commodity.views import IndexView
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    # 上传部件自动调用的上传地址
+    url(r'^ckeditor/', include("ckeditor_uploader.urls")),
     url(r'^user/', include('user.urls', namespace="user")),
     url(r'^order/', include('order.urls', namespace="order")),
     url(r'^commodity/', include('commodity.urls', namespace="commodity")),
-    url(r'^shopping/', include('shopping.urls', namespace="shopping"))
+    url(r'^shopping/', include('shopping.urls', namespace="shopping")),
+    url(r'^$', IndexView.as_view()),
 ]
